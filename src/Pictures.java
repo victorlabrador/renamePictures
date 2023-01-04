@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,14 +38,12 @@ public class Pictures {
 
     private static String quitarExt(String fichero){
         int index = fichero.lastIndexOf(".");
-        String nombre = fichero.substring(0, index);
-        return nombre;
+        return fichero.substring(0, index);
     }
 
     private static String obtenerExt(String fichero){
         int index = fichero.lastIndexOf(".");
-        String nombre = fichero.substring(index);
-        return nombre;
+        return fichero.substring(index);
     }
 
     public static boolean isSameDay(Date date1, Date date2) {
@@ -59,7 +58,7 @@ public class Pictures {
 
     private static void modifyInternalDate(File file, int y, int m, int d){
         // Boolean cambiarNombre = false;
-        Long lastModified = file.lastModified();
+        long lastModified = file.lastModified();
         Date lastModifiedDate = new Date(lastModified);
         SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
         SimpleDateFormat minFormat = new SimpleDateFormat("mm");
@@ -76,26 +75,26 @@ public class Pictures {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if (!isSameDay(newModifiedDate, lastModifiedDate)){
-//            if (newModifiedDate.after(lastModifiedDate)){
-//                // cambiarNombre = true; NO TIENE SENTIDO ESTE CASO
-//            }
+        if (!isSameDay(Objects.requireNonNull(newModifiedDate), lastModifiedDate)){
+            // if (newModifiedDate.after(lastModifiedDate)){
+            //   cambiarNombre = true; NO TIENE SENTIDO ESTE CASO
+            // }
             if (newModifiedDate.before(lastModifiedDate)){
                 Date test = new Date(file.lastModified());
                 file.setLastModified(newModifiedDate.getTime());
                 Date test2 = new Date(file.lastModified());
                 modifiedFiles++;
-                System.out.println("#" + modifiedFiles + "(" + file.getName() + "). Antes: " + test + ". Despues: " + test2);
+                System.out.println("#" + modifiedFiles + "(" + file.getName() + "). Antes: " + test + ". Después: " + test2);
             }
-        } // Else es que tienen el mismo dia y esta OK
+        } // Else es que tienen el mismo día y esta OK
         // return cambiarNombre;
     }
 
 
     private static void rename(final File carpeta, ArrayList<String> ficheros) throws IOException {
-        for (final File ficheroEntrada : carpeta.listFiles()) {
+        for (final File ficheroEntrada : Objects.requireNonNull(carpeta.listFiles())) {
             if (ficheroEntrada.isDirectory()) {
-                ArrayList<String> nuevo = new ArrayList<String>();
+                ArrayList<String> nuevo = new ArrayList<>();
                 rename(ficheroEntrada, nuevo);
             } else {
                 // Comprobar que es una imagen JPG/PNG/JPEG
@@ -122,24 +121,24 @@ public class Pictures {
 
                 // Obtener extension
                 String extension = ficheroEntrada.toString().substring(ficheroEntrada.toString().lastIndexOf(".")).toLowerCase();
-                // Obtener informacion del fichero
-                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                // Obtener información del fichero
+                // SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
                 SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
                 SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
                 SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
-                SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
-                SimpleDateFormat minFormat = new SimpleDateFormat("mm");
-                SimpleDateFormat secFormat = new SimpleDateFormat("ss");
+                // SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
+                // SimpleDateFormat minFormat = new SimpleDateFormat("mm");
+                // SimpleDateFormat secFormat = new SimpleDateFormat("ss");
                 long dateFichero = ficheroEntrada.lastModified();
 
                 String y = yearFormat.format(dateFichero);
                 String m = monthFormat.format(dateFichero);
                 String d = dayFormat.format(dateFichero);
-                String h = hourFormat.format(dateFichero);
-                String min = minFormat.format(dateFichero);
-                String s = secFormat.format(dateFichero);
+                // String h = hourFormat.format(dateFichero);
+                // String min = minFormat.format(dateFichero);
+                // String s = secFormat.format(dateFichero);
 
-                Boolean noName = false;
+                boolean noName = false;
                 if (matcher.find()){
                     String regexName = matcher.group(0);
                     if (regexName.startsWith("20")){ // Del año 20XX, cambiar en el año 2100 xd
@@ -160,7 +159,7 @@ public class Pictures {
                 String fullOldName = yOldName + mOldName + dOldName;
                 String nameExif = y + m + d;
                 // Comparar fechas
-                String renamed = "";
+                String renamed;
                 if (!noName && fullOldName.compareTo(nameExif) < 1){ // Viejo: -1 o 0 es más viejo, mantenemos viejo
                     y = yOldName;
                     m = mOldName;
@@ -199,7 +198,7 @@ public class Pictures {
     }
 
     private static void listarDirectorios(File folder){
-        for (File ficheroEntrada : folder.listFiles()){
+        for (File ficheroEntrada : Objects.requireNonNull(folder.listFiles())){
             if (ficheroEntrada.isDirectory()){
                 System.out.println(ficheroEntrada);
                 listarDirectorios(ficheroEntrada);
@@ -207,12 +206,12 @@ public class Pictures {
         }
     }
     public static void main(String[] args) throws IOException {
-        System.out.println(" ****************** RENOMBRAR IMAGENES ******************");
+        System.out.println(" ****************** RENOMBRAR IMÁGENES ******************");
         System.out.println(" ********************************************************");
-        System.out.println("\nHola!! Tienes la opcion de elegir diferentes formas...");
+        System.out.println("\nHola!! Tienes la opción de elegir diferentes formas...");
         System.out.println("Opción 1) Formato guion: 2019-12-10 (para varias fotos en el mismo dia 2019-12-10_02)");
         System.out.println("Opción 2) Formato espacio: 2019 12 10 (para varias fotos en el mismo dia 2019 12 10_03)");
-        System.out.println("Seleccion 1 o 2, por favor...");
+        System.out.println("Selección 1 o 2, por favor...");
         Scanner scan = new Scanner(System.in);
         String leido = scan.nextLine();
         boolean entradaOk = false;
@@ -237,7 +236,7 @@ public class Pictures {
         if (type == 1){
             realType = type1;
         }
-        else if (type == 2){
+        else {
             realType = type2;
         }
         System.out.println("Venga, dime ahora la ruta A PARTIR de la cual quieres hacer los renombres...");
@@ -263,7 +262,7 @@ public class Pictures {
                     okay = scan.nextLine();
                 }
             } catch (Exception any){
-                System.out.println("Eso no es ni una opcion...");
+                System.out.println("Eso no es ni una opción...");
                 System.out.println("Co, elige una \"si\" o \"no\"");
                 okay = scan.nextLine();
             }
@@ -274,21 +273,21 @@ public class Pictures {
             System.out.println("El directorio no existe... Vuelve a lanzarlo bien");
         }
         else {
-            System.out.println("Ultima comprobacion... Modificaras los nombres de las fotos de estas carpetas: ");
+            System.out.println("Ultima comprobación... Modificaras los nombres de las fotos de estas carpetas: ");
             System.out.println(folder);
             listarDirectorios(folder);
             System.out.println("VAMOS?! (si/no)");
             String go = scan.nextLine();
             if (go.equals("si")){
                 System.out.println("Alla vamos");
-                ArrayList<String> ficheros = new ArrayList<String>();
+                ArrayList<String> ficheros = new ArrayList<>();
                 rename(folder, ficheros);
             }
             else if(go.equals("no")) {
                 System.out.println("Menos mal que te he avisado una ultima vez...");
             }
             else{
-                System.out.println("La opcion solo era si/no...");
+                System.out.println("La opción solo era si/no...");
             }
         }
         System.out.println("TOTAL ARCHIVOS MODIFICADOS: " + numFiles);
