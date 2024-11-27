@@ -1,3 +1,5 @@
+package src;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -160,6 +162,7 @@ public class Pictures {
                 String nameExif = y + m + d;
                 // Comparar fechas
                 String renamed;
+                System.out.println("El fichero de entrada: \"" + fullOldName + "\"...");
                 if (!noName && fullOldName.compareTo(nameExif) < 1){ // Viejo: -1 o 0 es más viejo, mantenemos viejo
                     y = yOldName;
                     m = mOldName;
